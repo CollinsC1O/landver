@@ -6,7 +6,7 @@ pub mod LandRegistryContract {
     use land_registry::utils::utils::{create_land_id, LandUseIntoOptionFelt252};
     use core::array::ArrayTrait;
     use starknet::storage::{Map, StorageMapWriteAccess, StorageMapReadAccess};
-    use land_registry::errors::Errors;
+    use crate::land_registry::errors::Errors;
 
 
     #[storage]
