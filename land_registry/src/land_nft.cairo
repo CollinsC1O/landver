@@ -1,7 +1,7 @@
 use starknet::ContractAddress;
 use openzeppelin::token::erc721::ERC721Component;
 use openzeppelin::introspection::src5::SRC5Component;
-use land_registry::scr::errors::Errors;
+use land_registry::errors::Errors;
 
 #[starknet::interface]
 pub trait ILandNFT<TContractState> {
