@@ -6,6 +6,7 @@ pub mod LandRegistryContract {
     use land_registry::utils::utils::{create_land_id, LandUseIntoOptionFelt252};
     use core::array::ArrayTrait;
     use starknet::storage::{Map, StorageMapWriteAccess, StorageMapReadAccess};
+    use land_registry::errors;
 
 
     #[storage]
@@ -122,7 +123,7 @@ pub mod LandRegistryContract {
         }
 
         fn update_land(ref self: ContractState, land_id: u256, area: u256, land_use: LandUse) {
-            assert(InternalFunctions::only_owner(@self, land_id), 'Only owner can update land');
+            assert(InternalFunctions::only_owner(@self, land_id), Errors::UPDATE_BY_OWNER);
             let mut land = self.lands.read(land_id);
             land.area = area;
             land.land_use = land_use;
@@ -132,8 +133,8 @@ pub mod LandRegistryContract {
         }
 
         fn transfer_land(ref self: ContractState, land_id: u256, new_owner: ContractAddress) {
-            assert(InternalFunctions::only_owner(@self, land_id), 'Only owner can transfer');
-            assert(self.approved_lands.read(land_id), 'Land must be approved');
+            assert(InternalFunctions::only_owner(@self, land_id), Errors::ONLY_OWNER_TRNF);
+            assert(self.approved_lands.read(land_id), Errors::LAND_APPROVAL);
 
             let mut land = self.lands.read(land_id);
             let old_owner = land.owner;
@@ -155,7 +156,7 @@ pub mod LandRegistryContract {
                 i += 1;
             };
 
-            assert(index_to_remove < old_owner_land_count, 'Land not found');
+            assert(index_to_remove < old_owner_land_count, Errors::NO_LAND);
 
             if index_to_remove < old_owner_land_count - 1 {
                 let last_land = self.owner_lands.read((old_owner, old_owner_land_count - 1));
@@ -182,7 +183,7 @@ pub mod LandRegistryContract {
         }
 
         fn approve_land(ref self: ContractState, land_id: u256) {
-            assert(InternalFunctions::only_inspector(@self), 'Only inspector can approve');
+            assert(InternalFunctions::only_inspector(@self), Errors::INSPECTOR_APPROVE);
             self.approved_lands.write(land_id, true);
 
             // Mint NFT
@@ -195,7 +196,7 @@ pub mod LandRegistryContract {
         }
 
         fn reject_land(ref self: ContractState, land_id: u256) {
-            assert(InternalFunctions::only_inspector(@self), 'Only inspector can reject');
+            assert(InternalFunctions::only_inspector(@self), Errors::INSPECTOR_REJECT);
             let mut land = self.lands.read(land_id);
             land.is_approved = false;
             self.lands.write(land_id, land);
