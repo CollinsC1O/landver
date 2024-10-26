@@ -1,7 +1,7 @@
 use starknet::ContractAddress;
 use openzeppelin::token::erc721::ERC721Component;
 use openzeppelin::introspection::src5::SRC5Component;
-use land_registry::errors;
+use land_registry::errors::Errors;
 
 #[starknet::interface]
 pub trait ILandNFT<TContractState> {
@@ -18,7 +18,7 @@ pub mod LandNFT {
     use openzeppelin::token::erc721::{ERC721Component, ERC721Component::InternalTrait};
     use openzeppelin::introspection::src5::SRC5Component;
     use openzeppelin::token::erc721::ERC721HooksEmptyImpl;
-    use land_registry::errors;
+    use land_registry::errors::Errors;
 
     component!(path: ERC721Component, storage: erc721, event: ERC721Event);
     component!(path: SRC5Component, storage: src5, event: SRC5Event);
